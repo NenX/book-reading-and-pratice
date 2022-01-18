@@ -3,17 +3,16 @@
 
 
 
-# add_executable(TLPI main.c)
-
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
-
-
 
 
 cmake_minimum_required(VERSION 3.0.0)
 project(cmaketest VERSION 0.1.0)
+
+# pthread
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+# pthread
+
 
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -24,9 +23,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib")
 file(GLOB_RECURSE mains RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src/*main.c")
 file(GLOB libs RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/lib/*")
 
-foreach(aa IN LISTS libs)
-    message("-------- " ${aa})
-endforeach()
+
 
 foreach(mainfile IN LISTS mains)
     # Get file name without directory
@@ -34,9 +31,18 @@ foreach(mainfile IN LISTS mains)
 
     get_filename_component(lastname ${mainfile} NAME_WE)
     get_filename_component(dirname ${mainfile} DIRECTORY)
-    STRING( REGEX REPLACE "^.*([\\/]+)" "" prjName ${dirname})
+    STRING( REGEX REPLACE "^.*([\\/]+)" "" lastDirName ${dirname})
 
-    add_executable(${prjName} ${mainfile} ${libs})
+
+    set(targetName ${lastDirName}_${lastname})
+
+    message("-------- " ${targetName})
+
+    add_executable(${targetName} ${mainfile} ${libs})
+    
+    # pthread
+    target_link_libraries(${targetName} PRIVATE Threads::Threads)
+    # pthread
 endforeach()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
