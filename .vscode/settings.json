@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "tlpi_hdr.h": "c",
-        "*.inc": "c"
+        "*.inc": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "pthread.h": "c",
+        "errno.h": "c"
     }
 }
