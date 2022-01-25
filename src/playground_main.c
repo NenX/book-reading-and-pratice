@@ -15,7 +15,10 @@ void destrctor(void *data)
 {
     printf("destrctor : %d\n", (int)data);
 }
-
+void abc(void *data)
+{
+    printf("destrctor : %d\n", (int)data);
+}
 void fn(void)
 {
     printf("once !!\n");
@@ -48,7 +51,8 @@ threadFunc(void *arg)
 int main(int argc, char *argv[])
 {
     printf("main 123\n");
-
+    pthread_cleanup_push(abc, (void *)9999999);
+    pthread_cleanup_pop(2);
     pthread_t t1;
     pthread_t t2;
 
