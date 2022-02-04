@@ -7,6 +7,8 @@
         "pthread.h": "c",
         "errno.h": "c",
         "fcntl.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "ugid_functions.h": "c",
+        "grp.h": "c"
     }
 }
