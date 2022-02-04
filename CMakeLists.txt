@@ -29,14 +29,24 @@ foreach(mainfile IN LISTS mains)
 
 
     set(targetName ${lastDirName}_${lastname})
-
     message("-------- " ${targetName})
-
     add_executable(${targetName} ${mainfile} ${libs})
+
+    if(${lastDirName} STREQUAL "8")
+        # crypt()
+        target_link_libraries(${targetName} PRIVATE libcrypt.so)
+        # crypt()
+
+    else()
+    endif()
+
+    if(lastDirName MATCHES "(29|30|31|32)")
+        # pthread
+        target_link_libraries(${targetName} PRIVATE Threads::Threads)
+        # pthread
+    endif()
     
-    # pthread
-    target_link_libraries(${targetName} PRIVATE Threads::Threads)
-    # pthread
+
 endforeach()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
