@@ -10,6 +10,7 @@
         "stat.h": "c",
         "ugid_functions.h": "c",
         "grp.h": "c",
-        "curr_time.h": "c"
+        "curr_time.h": "c",
+        "ftw.h": "c"
     }
 }
