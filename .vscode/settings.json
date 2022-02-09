@@ -9,6 +9,7 @@
         "fcntl.h": "c",
         "stat.h": "c",
         "ugid_functions.h": "c",
-        "grp.h": "c"
+        "grp.h": "c",
+        "curr_time.h": "c"
     }
 }
