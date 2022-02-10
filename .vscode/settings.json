@@ -11,6 +11,7 @@
         "ugid_functions.h": "c",
         "grp.h": "c",
         "curr_time.h": "c",
-        "ftw.h": "c"
+        "ftw.h": "c",
+        "signal_functions.h": "c"
     }
 }
