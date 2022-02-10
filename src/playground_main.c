@@ -8,17 +8,14 @@
 char buf[MAX_NUM];
 int main(int argc, char *argv[])
 {
-    struct stat statbuf;
-    stat("/home/noah/a.txt", &statbuf);
+    char a[5];
+    struct ss
+    {
+        int i;
+        char d[];
 
-    struct tm myTm;
-    char *result = strptime("2000-01-01 11:11:11", "%Y-%m-%d %H:%M:%S", &myTm);
+    };
+    
 
-    struct utimbuf _utimbuf;
-    _utimbuf.actime = statbuf.st_atime;
-    _utimbuf.modtime = mktime(&myTm);
-
-    int status = utime("/home/noah/a.txt", &_utimbuf);
-
-    printf("????:%d\n", status);
+    printf("????:%u,%u\n", sizeof(a), sizeof(struct ss));
 }
