@@ -4,18 +4,18 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <utime.h>
+#include <signal.h>
 #define MAX_NUM 9999
 char buf[MAX_NUM];
+
+void fn(int n){
+    printf("????:%d\n",n);
+    sleep(999);
+}
 int main(int argc, char *argv[])
 {
-    char a[5];
-    struct ss
-    {
-        int i;
-        char d[];
+    signal(SIGINT,fn);
+    signal(SIGHUP,fn);
 
-    };
-    
-
-    printf("????:%u,%u\n", sizeof(a), sizeof(struct ss));
+    sleep(999);
 }
