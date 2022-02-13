@@ -12,6 +12,7 @@
         "grp.h": "c",
         "curr_time.h": "c",
         "ftw.h": "c",
-        "signal_functions.h": "c"
+        "signal_functions.h": "c",
+        "types.h": "c"
     }
 }

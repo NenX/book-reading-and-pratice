@@ -1,5 +1,14 @@
+
 #define _BSD_SOURCE /* Get major() and minor() from <sys/types.h> */
+
+/*
+glibc 2.28 no longer defines 'major' and 'minor' in <sys/types.h> and
+requires us to include <sys/sysmacros.h>.
+
+https://git.savannah.gnu.org/gitweb/?p=autoconf.git;a=commit;h=e17a30e987d7ee695fb4294a82d987ec3dc9b974
+*/
 #include <sys/types.h>
+#include <sys/sysmacros.h>
 #include <sys/stat.h>
 #include <time.h>
 #include "file_perms.h"
