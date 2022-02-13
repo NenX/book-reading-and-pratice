@@ -1,17 +1,21 @@
-#include <pthread.h>
+#define _XOPEN_SOURCE
+
 #include "tlpi_hdr.h"
-#include <unistd.h>
-#include <fcntl.h>
-#include "curr_time.h"
+#include <sys/stat.h>
+#include <time.h>
+#include <utime.h>
+#include <signal.h>
 #define MAX_NUM 9999
 char buf[MAX_NUM];
+
+void fn(int n){
+    printf("????:%d\n",n);
+    sleep(999);
+}
 int main(int argc, char *argv[])
 {
-    printf("aaa");
-    printf("bbb");
-    write(STDOUT_FILENO,"111",3);
+    signal(SIGINT,fn);
+    signal(SIGHUP,fn);
 
-    sleep(3);
-    printf("ccc");
-
+    sleep(999);
 }

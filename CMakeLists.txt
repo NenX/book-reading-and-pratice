@@ -32,7 +32,7 @@ foreach(mainfile IN LISTS mains)
     message("-------- " ${targetName})
     add_executable(${targetName} ${mainfile} ${libs})
 
-    if(${lastDirName} STREQUAL "8")
+    if(lastDirName MATCHES "(8|21)")
         # crypt()
         target_link_libraries(${targetName} PRIVATE libcrypt.so)
         # crypt()
