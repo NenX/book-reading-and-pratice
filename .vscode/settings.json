@@ -13,6 +13,7 @@
         "curr_time.h": "c",
         "ftw.h": "c",
         "signal_functions.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "sysmacros.h": "c"
     }
 }
