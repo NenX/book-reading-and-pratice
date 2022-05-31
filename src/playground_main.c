@@ -16,12 +16,11 @@ void fn(int n)
 }
 int main(int argc, char *argv[])
 {
-    fprintf(stderr, "Terminal FG process group: %d\n",getpid());
+    fprintf(stderr, "Terminal FG process group: %d\n", getpid());
     if (isatty(STDIN_FILENO))
     {
-    printf("heihei\n");
-
+        fprintf(stderr, "heihei\n");
     }
-    printf("in:%d\n", STDIN_FILENO);
-    printf("out:%d\n", STDOUT_FILENO);
+    fprintf(stderr, "in:%d\n", STDIN_FILENO);
+    fprintf(stderr, "out:%d\n", STDOUT_FILENO);
 }
