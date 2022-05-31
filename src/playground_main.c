@@ -6,6 +6,7 @@
 #include <utime.h>
 #include <signal.h>
 #include <fcntl.h>
+#include <unistd.h>
 #define MAX_NUM 9999
 char buf[MAX_NUM];
 
@@ -16,11 +17,6 @@ void fn(int n)
 }
 int main(int argc, char *argv[])
 {
-    fprintf(stderr, "Terminal FG process group: %d\n", getpid());
-    if (isatty(STDIN_FILENO))
-    {
-        fprintf(stderr, "heihei\n");
-    }
-    fprintf(stderr, "in:%d\n", STDIN_FILENO);
-    fprintf(stderr, "out:%d\n", STDOUT_FILENO);
+   printf("abc\n");
+   _exit(EXIT_SUCCESS);
 }
