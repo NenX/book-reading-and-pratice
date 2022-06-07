@@ -29,7 +29,7 @@ foreach(mainfile IN LISTS mains)
 
 
     set(targetName ${lastDirName}_${lastname})
-    message("-------- " ${targetName})
+    # message("-------- " ${targetName})
     add_executable(${targetName} ${mainfile} ${libs})
 
     if(lastDirName MATCHES "(8|21)")
