@@ -1,6 +1,7 @@
 #define _GNU_SOURCE /* Get '_sys_nerr' and '_sys_errlist' declarations from <stdio.h> */
 #include <stdio.h>
-#include <string.h>             /* Get declaration of strerror() */
+#include <string.h>
+#include "weird.h"             /* Get declaration of strerror() */
 #define MAX_ERROR_LEN 256       /* Maximum length of string  returned by strerror() */
 static char buf[MAX_ERROR_LEN]; /* Statically allocated return buffer */
 char *

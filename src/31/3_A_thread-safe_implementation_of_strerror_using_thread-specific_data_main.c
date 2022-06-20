@@ -3,6 +3,8 @@
 #include <string.h> /* Get declaration of strerror() */
 #include <pthread.h>
 #include "tlpi_hdr.h"
+#include "weird.h"             /* Get declaration of strerror() */
+
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static pthread_key_t strerrorKey;
 #define MAX_ERROR_LEN 256 /* Maximum length of string in per-thread  buffer returned by strerror() */

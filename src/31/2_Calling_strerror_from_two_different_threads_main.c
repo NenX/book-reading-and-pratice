@@ -3,6 +3,8 @@
 #include <string.h>   
 #include <errno.h> 
 #include <stdlib.h>         /* Get declaration of strerror() */
+#include "weird.h"             /* Get declaration of strerror() */
+
 #define MAX_ERROR_LEN 256       /* Maximum length of string  returned by strerror() */
 static char buf[MAX_ERROR_LEN]; /* Statically allocated return buffer */
 char *

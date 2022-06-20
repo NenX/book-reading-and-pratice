@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "weird.h"             /* Get declaration of strerror() */
+
 #define MAX_ERROR_LEN 256       /* Maximum length of string  returned by strerror() */
 
 static pthread_once_t once;
