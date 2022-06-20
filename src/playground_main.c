@@ -80,6 +80,9 @@ void fn()
 }
 int main(int argc, char *argv[])
 {
-    system("ls | wc -l");
-    fn();
+    int opt;
+    while ((opt = getopt(argc, argv, "n")) != -1)
+    {
+        printf("argc:%d, optind: %d\n", argc, optind);
+    }
 }
