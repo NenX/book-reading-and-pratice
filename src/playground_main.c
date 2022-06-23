@@ -8,81 +8,39 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
+#include <sys/types.h>
+#include <sys/sem.h>
+#include "curr_time.h" /* Declaration of currTime() */
+#include "semun.h"     /* Definition of semun union */
 #define MAX_NUM 9999
-char buf[MAX_NUM];
 
-void fn()
-{
-    int pfd[2];
-    if (pipe(pfd) == -1)
-        errExit("pipe");
-
-    switch (fork())
-    {
-    case -1:
-        errExit("fork");
-        break;
-    case 0:
-        if (close(pfd[0]) == -1)
-            errExit("close");
-        if (pfd[1] != STDOUT_FILENO)
-        {
-            if (dup2(pfd[1], STDOUT_FILENO) == -1)
-                errExit("dup2");
-
-            if (close(pfd[1]) == -1)
-                errExit("close");
-        }
-        execlp("ls", "ls", (char *)NULL);
-        errExit("execlp");
-
-        break;
-    default:
-        break;
-    }
-
-    switch (fork())
-    {
-    case -1:
-        errExit("fork2");
-        break;
-    case 0:
-        if (close(pfd[1]) == -1)
-            errExit("close2");
-        if (pfd[0] != STDIN_FILENO)
-        {
-            if (dup2(pfd[0], STDIN_FILENO) == -1)
-                errExit("dup2 2");
-
-            if (close(pfd[0]) == -1)
-                errExit("close 2");
-        }
-        execlp("grep", "grep", "44", (char *)NULL);
-        errExit("execlp");
-
-        break;
-    default:
-        break;
-    }
-
-    if (close(pfd[0]) == -1)
-        errExit("close2");
-
-    if (close(pfd[1]) == -1)
-        errExit("close2");
-
-    if (wait(NULL) == -1)
-        errExit("wait 1");
-
-    if (wait(NULL) == -1)
-        errExit("wait 2");
-}
 int main(int argc, char *argv[])
 {
-    int opt;
-    while ((opt = getopt(argc, argv, "n")) != -1)
+    if (argc < 2 || argc > 3)
     {
-        printf("argc:%d, optind: %d\n", argc, optind);
+        usageErr("错误的使用\n");
+    }
+    if (argc == 2)
+    {
+        int semid = semget(IPC_PRIVATE, 1, S_IRUSR | S_IWUSR);
+        if (semid == -1)
+            errExit("semid");
+        union semun args;
+        args.val = getInt(argv[1], 0, "init-value");
+        if (semctl(semid, 0, SETVAL, &args) == -1)
+            errExit("semctl");
+        printf("semaphore id: %d\n", semid);
+    }
+    else
+    {
+        int semid = getInt(argv[1], 0, "semid");
+        struct sembuf sop;
+        sop.sem_num = 0;
+        sop.sem_op = getInt(argv[2], 0, "operation");
+        sop.sem_flg = 0;
+
+        printf("%ld: about to semop at %s", (long)getpid(), currTime("%T"));
+        if (semop(semid, &sop, 1))
+            printf("%ld: semop completed at %s", (long)getpid(), currTime("%T"));
     }
 }
