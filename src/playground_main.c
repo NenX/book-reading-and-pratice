@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <sys/sem.h>
 #include "curr_time.h" /* Declaration of currTime() */
-#include "semun.h"     /* Definition of semun union */
+#include "./47_System_V_Semaphores/semun.h"     /* Definition of semun union */
 #define MAX_NUM 9999
 
 int main(int argc, char *argv[])
@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
     //     printf("%ld: semop completed at %s", (long)getpid(), currTime("%T"));
     // }
 
-    int * s;
-    int ss[2];
-    printf("hh:%ld",sizeof(ss));
+    union semun s;
+    s.val = 222;
+    printf("??:%d",s.val);
 
 }
