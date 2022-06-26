@@ -29,8 +29,11 @@ foreach(mainfile IN LISTS mains)
 
 
     set(targetName ${lastDirName}_${lastname})
-    # message("-------- " ${targetName})
-    add_executable(${targetName} ${mainfile} ${libs})
+
+    file(GLOB local_headers RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${dirname}/*.h")
+
+    # message("------------:" ${local_headers})
+    add_executable(${targetName} ${mainfile} ${libs} ${local_headers})
 
     if(lastDirName MATCHES "(8|21)")
         # crypt()
