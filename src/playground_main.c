@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <sys/sem.h>
 #include "curr_time.h" /* Declaration of currTime() */
-#include "./47_System_V_Semaphores/semun.h"     /* Definition of semun union */
+#include "semun.h"     /* Definition of semun union */
 #define MAX_NUM 9999
 
 int main(int argc, char *argv[])
