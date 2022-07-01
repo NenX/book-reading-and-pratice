@@ -42,6 +42,3 @@ releaseSem(int semId, int semNum)
     return semop(semId, &sops, 1);
 }
 
-void main(){
-    
-}
