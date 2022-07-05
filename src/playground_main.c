@@ -12,7 +12,13 @@
 #include <sys/sem.h>
 #include "curr_time.h" /* Declaration of currTime() */
 #include "semun.h"     /* Definition of semun union */
+#include <sys/socket.h>
+#include <netinet/in.h>
 #define MAX_NUM 9999
+
+    
+
+
 
 int main(int argc, char *argv[])
 {
