@@ -14,7 +14,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
 
 # Find all main*.cpp files and store in list mains
-file(GLOB_RECURSE mains RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src/*main.c")
+file(GLOB_RECURSE mains RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 file(GLOB libs RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/lib/*")
 
 

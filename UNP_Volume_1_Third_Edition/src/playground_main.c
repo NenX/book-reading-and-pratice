@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
-
+#include "unp.h"
 void main()
 {
-    assert(2 == 3);
+    printf("sb:%d\n",max(2,3));
 }
