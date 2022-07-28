@@ -1,8 +1,7 @@
-#include "unp.h"
-#include <stdarg.h> /* ANSI C header file */
-#include <syslog.h> /* for syslog() */
+#include "unp_error.h"
+
 int daemon_proc;    /* set nonzero by daemon_init() */
-static void err_doit(int, int, const char *, va_list);
+
 /* Nonfatal error related to system call
  * Print message and return */
 void err_ret(const char *fmt, ...)
