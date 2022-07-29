@@ -43,7 +43,7 @@ LINE_STATUS parse_line(char *buffer, int &checked_index, int &read_index)
     for (checked_index; checked_index < read_index; checked_index++)
     {
         temp = buffer[checked_index];
-        if (temp = '\r')
+        if (temp == '\r')
         {
             if ((checked_index + 1) == read_index)
             {
@@ -58,7 +58,7 @@ LINE_STATUS parse_line(char *buffer, int &checked_index, int &read_index)
 
             return LINE_BAD;
         }
-        else if (temp = '\n')
+        else if (temp == '\n')
         {
             if ((checked_index > 1) && buffer[checked_index - 1] == '\r')
             {
@@ -197,12 +197,19 @@ HTTP_CODE parse_content(char *buffer, int &checked_index, CHECK_STATE &checkstat
 
 int main(int argc, char const *argv[])
 {
+    const char *ip;
+    int port;
     if (argc <= 2)
     {
         printf("usage: %s ip_address port_number\n", basename(argv[0]));
+        ip = "127.0.0.1";
+        port = 1234;
     }
-    const char *const ip = argv[1];
-    int port = atoi(argv[2]);
+    else
+    {
+        ip = argv[1];
+        port = atoi(argv[2]);
+    }
 
     struct sockaddr_in address;
     bzero(&address, sizeof(address));
