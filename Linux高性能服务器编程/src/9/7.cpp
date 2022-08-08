@@ -92,9 +92,9 @@ int main(int argc, char const *argv[])
         }
         for (int i = 0; i < user_counter + 1; i++)
         {
-            auto target = fds + i;
-
-            if ((target->fd == listenfd) && (target->revents & POLLIN))
+            auto target_pollfd = fds + i;
+            auto target_user = users + target_pollfd->fd;
+            if ((target_pollfd->fd == listenfd) && (target_pollfd->revents & POLLIN))
             {
                 struct sockaddr_in client_address;
                 socklen_t client_addresslength = sizeof(client_address);
@@ -116,10 +116,10 @@ int main(int argc, char const *argv[])
                 }
                 user_counter++;
 
-                auto clientfd = fds + i;
+                auto clientfd = fds + user_counter;
 
                 clientfd->fd = connfd;
-                clientfd->events = POLLIN & POLLRDHUP;
+                clientfd->events = POLLIN | POLLRDHUP | POLLERR;
                 clientfd->revents = 0;
 
                 auto client_data = users + connfd;
@@ -129,26 +129,29 @@ int main(int argc, char const *argv[])
 
                 printf("comes a new user, now have %d users.\n", user_counter);
             }
-            else if (target->revents & POLLERR)
+            else if (target_pollfd->revents & POLLERR)
             {
-                printf("get an error from %d users.\n", target->fd);
+                printf("get an error from %d users.\n", target_pollfd->fd);
             }
-            else if (target->revents & POLLRDHUP)
+            else if (target_pollfd->revents & POLLRDHUP)
             {
-                users[target->fd] = users[fds[user_counter].fd];
-                close(target->fd);
-                fds[i] = fds[user_counter];
+
+                auto oofd = fds + user_counter;
+                auto oo_user = users + oofd->fd;
+                users[target_pollfd->fd] = *oo_user;
+                close(target_pollfd->fd);
+                fds[i] = *oofd;
                 i--;
                 user_counter--;
                 printf("a client left.\n");
             }
-            else if (target->revents & POLLIN)
+            else if (target_pollfd->revents & POLLIN)
             {
-                int connfd = target->fd;
-                memset(users[connfd].buf, '\0', BUFFER_SIZE);
+                int connfd = target_pollfd->fd;
+                memset(target_user->buf, '\0', BUFFER_SIZE);
 
-                ret = recv(connfd, users[connfd].buf, BUFFER_SIZE - 1, 0);
-                printf("get %d bytes of client data %s from %d.\n", ret, users[connfd].buf, connfd);
+                ret = recv(connfd, target_user->buf, BUFFER_SIZE - 1, 0);
+                printf("get %d bytes of client data %s from %d.\n", ret, target_user->buf, connfd);
 
                 if (ret < 0)
                 {
@@ -172,25 +175,29 @@ int main(int argc, char const *argv[])
                         {
                             continue;
                         }
-                        fds[j].events |= ~POLLIN;
+                        fds[j].events &= ~POLLIN;
                         fds[j].events |= POLLOUT;
 
-                        users[fds[j].fd].write_buf = users[connfd].buf;
+                        users[fds[j].fd].write_buf = target_user->buf;
                     }
                 }
             }
-            else if (target->revents & POLLOUT)
+            else if (target_pollfd->revents & POLLOUT)
             {
-                int connfd = target->fd;
-                if (!users[connfd].write_buf)
+                int connfd = target_pollfd->fd;
+                if (!target_user->write_buf)
                 {
+                    printf("fd %d has no buf\n", connfd);
+
                     continue;
                 }
-                ret = send(connfd, users[connfd].write_buf, strlen(users[connfd].write_buf), 0);
+                printf("write %s to fd %d\n", target_user->write_buf, connfd);
+                ret = send(connfd, target_user->write_buf, strlen(target_user->write_buf), 0);
 
-                users[connfd].write_buf = NULL;
-                target->events |= ~POLLOUT;
-                target->events |= POLLIN;
+                target_user->write_buf = NULL;
+
+                target_pollfd->events &= ~POLLOUT;
+                target_pollfd->events |= POLLIN;
             }
         }
     }

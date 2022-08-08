@@ -62,7 +62,7 @@ int main(int argc, char const *argv[])
     fd0->revents = 0;
 
     fd1->fd = sockfd;
-    fd1->events = POLLIN & POLLRDHUP;
+    fd1->events = POLLIN | POLLRDHUP;
     fd1->revents = 0;
 
     char read_buf[BUFFER_SIZE];
@@ -73,7 +73,6 @@ int main(int argc, char const *argv[])
     while (1)
     {
         ret = poll(fds, 2, -1);
-        printf("poll return: %d_%d %d_%d \n",fds[0].revents, fd0->revents, fds[1].revents, fd1->revents);
         if (ret < 0)
         {
             printf("poll failure\n");
