@@ -1,5 +1,5 @@
 /**
- * 聊天室服务器程序epoll版本
+ * 统一事件源
  *
  */
 #define _GNU_SOURCE 1
