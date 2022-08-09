@@ -61,6 +61,8 @@ void modfd(int epollfd, int fd, bool is_in)
 }
 void doit(epoll_event *events, int number, int epollfd, int listenfd, client_data *users, unsigned int *user_fds, int &user_counter)
 {
+    char buffer[BUFFER_SIZE];
+
     for (int i = 0; i < number; i++)
     {
         auto target = events + i;
@@ -76,20 +78,19 @@ void doit(epoll_event *events, int number, int epollfd, int listenfd, client_dat
             int connfd = accept(listenfd, (sockaddr *)&client_address, &client_address_len);
             if (connfd < 0)
             {
-                printf("errno is %d", errno);
+                printf("errno is %d\n", errno);
                 continue;
             }
             if (user_counter >= USER_LIMIT)
             {
                 auto info = "too many users.\n";
-                printf("%s", info);
+                printf("%s\n", info);
                 send(connfd, info, strlen(info), 0);
                 close(connfd);
                 continue;
             }
             auto user = users + connfd;
             user->address = client_address;
-            memset(target_user->buf, '\0', BUFFER_SIZE);
 
             addfd(epollfd, connfd);
             *(user_fds + user_counter) = connfd;
@@ -98,10 +99,14 @@ void doit(epoll_event *events, int number, int epollfd, int listenfd, client_dat
         }
         else if (target_event & EPOLLIN)
         {
+            memset(target_user->buf, '\0', BUFFER_SIZE);
+
             while (1)
             {
-                int ret = recv(target_fd, target_user->buf, BUFFER_SIZE - 1, 0);
-                printf("recv return:%d\n", ret);
+                memset(buffer, '\0', BUFFER_SIZE);
+
+                int ret = recv(target_fd, buffer, BUFFER_SIZE - 1, 0);
+                printf("recv return:'%s' %d\n", buffer, ret);
                 if (ret < 0)
                 {
                     if (errno == EAGAIN)
@@ -114,7 +119,7 @@ void doit(epoll_event *events, int number, int epollfd, int listenfd, client_dat
                         user_counter--;
                         rmfd(epollfd, target_fd);
                         close(target_fd);
-                        printf("%d exit, now we have %d user\n",target_fd,user_counter);
+                        printf("%d exit, now we have %d user\n", target_fd, user_counter);
                         break;
                     }
                 }
@@ -124,7 +129,7 @@ void doit(epoll_event *events, int number, int epollfd, int listenfd, client_dat
                 }
                 else
                 {
-                    printf("read: %s", target_user->buf);
+                    strcat(target_user->buf, buffer);
 
                     for (int i = 0; i < user_counter + 1; i++)
                     {
@@ -147,11 +152,15 @@ void doit(epoll_event *events, int number, int epollfd, int listenfd, client_dat
             {
                 continue;
             }
-            printf("send %d: %s", target_fd, target_user->write_buf);
+            printf("send %d: %s\n", target_fd, target_user->write_buf);
             int ret = send(target_fd, target_user->write_buf, strlen(target_user->write_buf), 0);
 
             target_user->write_buf = NULL;
             modfd(epollfd, target_fd, true);
+        }
+        else if (target_event & EPOLLERR)
+        {
+            printf("EPOLLERR! \n");
         }
         else
         {

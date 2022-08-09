@@ -88,7 +88,7 @@ int main(int argc, char const *argv[])
         {
             memset(read_buf, '\0', BUFFER_SIZE);
             recv(fd1->fd, read_buf, BUFFER_SIZE - 1, 0);
-            printf("read from server: %s", read_buf);
+            printf("read from server: %s\n", read_buf);
         }
 
         if (fd0->revents & POLLIN)
