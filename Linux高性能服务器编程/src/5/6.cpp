@@ -58,8 +58,8 @@ int main(int argc, char const *argv[])
     char normal_data[] = "normal";
 
     send(sockfd, normal_data, strlen(normal_data), 0);
-
     send(sockfd, oob_data, strlen(oob_data), MSG_OOB);
+    sleep(2);
 
     send(sockfd, normal_data, strlen(normal_data), 0);
 
