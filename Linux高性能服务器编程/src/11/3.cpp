@@ -11,12 +11,15 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "tlpi_hdr.h"
 
 #define FD_LIMIT 65535
 #define MAX_EVENT_NUMBER 1024
 #define TIMESLOT 5
 
 using std::cout;
+using std::endl;
+
 
 static int pipefd[2];
 static sort_timer_lst timer_lst;
@@ -41,6 +44,8 @@ void addfd(int epollfd, int fd)
 }
 void sig_handler(int sig)
 {
+    // cout << "sig_handler" << sig << endl;
+
     int save_errno = errno;
 
     int msg = sig;
@@ -76,7 +81,7 @@ void cb_fn(client_data *user_data)
 
     assert(user_data);
     close(user_data->sockfd);
-    cout << "close fd:" << user_data->sockfd << "\n";
+    cout << "========================= close fd:" << user_data->sockfd << endl;
 }
 
 int main(int argc, char const *argv[])
@@ -131,20 +136,24 @@ int main(int argc, char const *argv[])
 
     auto users = new client_data[FD_LIMIT];
 
-    alarm(TIMESLOT);
-
+    // alarm(TIMESLOT);
     while (!stop_server)
     {
         int number = epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
+
         if (number < 0 && errno != EINTR)
         {
-            cout << "epoll failed\n";
+            cout << "epoll failed\n"
+                 << endl;
             break;
         }
-        for (size_t i = 0; i < number; i++)
+
+        for (int i = 0; i < number; i++)
         {
             auto target_event = events[i];
             auto target_fd = target_event.data.fd;
+                cout << "--------------------target_fd:" << target_fd << endl;
+
             if (target_fd == listenfd)
             {
                 sockaddr_in client_address;
@@ -152,6 +161,7 @@ int main(int argc, char const *argv[])
                 int connfd = accept(listenfd, (sockaddr *)&client_address, &client_address_len);
                 if (connfd == -1)
                     continue;
+                cout << "--------------------connfd:" << connfd << endl;
 
                 auto target_user = users + connfd;
                 auto timer = new util_timer;
@@ -169,9 +179,12 @@ int main(int argc, char const *argv[])
             }
             else if (target_fd == pipefd[0] && target_event.events & EPOLLIN)
             {
+                // cout << "pipefd[0]" << endl;
+
                 char signals[1024];
 
                 int ret = recv(target_fd, signals, sizeof(signals), 0);
+
                 if (ret > 0)
                 {
                     for (size_t i = 0; i < ret; i++)
@@ -193,10 +206,12 @@ int main(int argc, char const *argv[])
             }
             else if (target_event.events & EPOLLIN)
             {
+                cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx read" << endl;
                 auto target_user = users + target_fd;
                 auto timer = target_user->timer;
+                bzero(target_user->buf,BUFFER_SIZE);
                 int ret = recv(target_fd, target_user->buf, BUFFER_SIZE - 1, 0);
-                cout << "read" << ret << " bytes of data from " << target_fd;
+                cout << "read" << ret << " bytes of data from " << target_fd << endl;
                 if (ret < 0)
                 {
                     if (errno != EAGAIN)
@@ -218,7 +233,8 @@ int main(int argc, char const *argv[])
             }
             else
             {
-                /* code */
+                       cout << "eeeeeeeeeeeeeeeeeeeeeeeee else" << endl;
+
             }
         }
 
