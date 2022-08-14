@@ -147,14 +147,92 @@ int main(int argc, char const *argv[])
             auto target_fd = target_event.data.fd;
             if (target_fd == listenfd)
             {
+                sockaddr_in client_address;
+                socklen_t client_address_len = sizeof(client_address);
+                int connfd = accept(listenfd, (sockaddr *)&client_address, &client_address_len);
+                if (connfd == -1)
+                    continue;
+
+                auto target_user = users + connfd;
+                auto timer = new util_timer;
+                auto cur = time(NULL);
+
+                target_user->address = client_address;
+                target_user->sockfd = connfd;
+                target_user->timer = timer;
+
+                timer->userdata = target_user;
+                timer->cb_func = cb_fn;
+                timer->expire = cur + 3 * TIMESLOT;
+
+                timer_lst.add_timer(timer);
             }
             else if (target_fd == pipefd[0] && target_event.events & EPOLLIN)
             {
+                char signals[1024];
+
+                int ret = recv(target_fd, signals, sizeof(signals), 0);
+                if (ret > 0)
+                {
+                    for (size_t i = 0; i < ret; i++)
+                    {
+                        switch (signals[i])
+                        {
+                        case SIGTERM:
+                            stop_server = true;
+                            break;
+                        case SIGALRM:
+                            timeout = true;
+                            break;
+
+                        default:
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (target_event.events & EPOLLIN)
+            {
+                auto target_user = users + target_fd;
+                auto timer = target_user->timer;
+                int ret = recv(target_fd, target_user->buf, BUFFER_SIZE - 1, 0);
+                cout << "read" << ret << " bytes of data from " << target_fd;
+                if (ret < 0)
+                {
+                    if (errno != EAGAIN)
+                    {
+                        cb_fn(target_user);
+                        timer_lst.del_timer(timer);
+                    }
+                }
+                else if (ret = 0)
+                {
+                    cb_fn(target_user);
+                    timer_lst.del_timer(timer);
+                }
+                else
+                {
+                    timer->expire = time(NULL) + 3 * TIMESLOT;
+                    timer_lst.ajust_timer(timer);
+                }
+            }
+            else
+            {
                 /* code */
             }
-            
+        }
+
+        if (timeout)
+        {
+            timer_handler();
+            timeout = false;
         }
     }
+
+    close(listenfd);
+    close(pipefd[0]);
+    close(pipefd[1]);
+    delete[] users;
 
     return 0;
 }
