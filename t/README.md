@@ -8,3 +8,6 @@
 - 数字图像处理  https://book.douban.com/subject/6434627/
 
 - 信号与系统 https://book.douban.com/subject/21359219/
+
+
+(信号系统、概率论)->通讯原理
