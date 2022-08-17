@@ -24,6 +24,11 @@ class tw_timer
 {
 
 public:
+    tw_timer(int rot, int ts) : rotation{rot}, time_slot{ts} {}
+
+public:
+    int rotation;
+    int time_slot;
     time_t expire;
     void (*cb_func)(client_data *) = nullptr;
     client_data *userdata;
@@ -31,7 +36,7 @@ public:
     tw_timer *next = nullptr;
 };
 
-class sort_timer_lst
+class time_wheel
 {
 private:
     tw_timer *head = nullptr;
@@ -39,14 +44,14 @@ private:
     void add_timer(tw_timer *timer, tw_timer *lst_head);
 
 public:
-    ~sort_timer_lst();
+    ~time_wheel();
     void add_timer(tw_timer *);
     void ajust_timer(tw_timer *);
     void del_timer(tw_timer *);
     void tick();
 };
 
-sort_timer_lst::~sort_timer_lst()
+time_wheel::~time_wheel()
 {
     auto tmp = head;
 
@@ -59,7 +64,7 @@ sort_timer_lst::~sort_timer_lst()
     }
 }
 
-void sort_timer_lst::add_timer(tw_timer *timer, tw_timer *lst_head)
+void time_wheel::add_timer(tw_timer *timer, tw_timer *lst_head)
 {
     auto prev = lst_head;
     auto tmp = prev->next;
@@ -84,7 +89,7 @@ void sort_timer_lst::add_timer(tw_timer *timer, tw_timer *lst_head)
         tail = timer;
     }
 }
-void sort_timer_lst::add_timer(tw_timer *timer)
+void time_wheel::add_timer(tw_timer *timer)
 {
     if (!timer)
         return;
@@ -103,7 +108,7 @@ void sort_timer_lst::add_timer(tw_timer *timer)
     add_timer(timer, head);
 }
 
-void sort_timer_lst::ajust_timer(tw_timer *timer)
+void time_wheel::ajust_timer(tw_timer *timer)
 {
     if (!timer)
         return;
@@ -127,7 +132,7 @@ void sort_timer_lst::ajust_timer(tw_timer *timer)
         add_timer(timer, head);
     }
 }
-void sort_timer_lst::del_timer(tw_timer *timer)
+void time_wheel::del_timer(tw_timer *timer)
 {
     if (!timer)
     {
@@ -155,7 +160,7 @@ void sort_timer_lst::del_timer(tw_timer *timer)
         return;
     }
 }
-void sort_timer_lst::tick()
+void time_wheel::tick()
 {
 
     if (!head)
