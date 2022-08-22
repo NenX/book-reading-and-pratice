@@ -39,148 +39,134 @@ public:
 class time_wheel
 {
 private:
+    static const int N = 60;
+    static const int SI = 1;
+    tw_timer *slots[N];
+    int cur_slot;
+
     tw_timer *head = nullptr;
     tw_timer *tail = nullptr;
-    void add_timer(tw_timer *timer, tw_timer *lst_head);
 
 public:
+    time_wheel();
     ~time_wheel();
-    void add_timer(tw_timer *);
-    void ajust_timer(tw_timer *);
+    void add_timer(int);
     void del_timer(tw_timer *);
     void tick();
 };
 
+time_wheel::time_wheel()
+{
+    for (size_t i = 0; i < N; i++)
+    {
+        slots[i] = nullptr;
+    }
+}
+
 time_wheel::~time_wheel()
 {
-    auto tmp = head;
 
-    while (tmp)
+    for (size_t i = 0; i < N; i++)
     {
-        std::cout << ":" << (void *)tmp << " start delete \n";
-        head = tmp->next;
-        delete tmp;
-        tmp = head;
-    }
-}
+        auto tmp = slots[i];
 
-void time_wheel::add_timer(tw_timer *timer, tw_timer *lst_head)
-{
-    auto prev = lst_head;
-    auto tmp = prev->next;
-    while (tmp)
-    {
-        if (timer->expire < tmp->expire)
+        while (tmp)
         {
-            prev->next = timer;
-            timer->next = tmp;
-            tmp->prev = timer;
-            timer->prev = prev;
-            break;
+            std::cout << ":" << (void *)tmp << " start delete \n";
+            slots[i] = tmp->next;
+            delete tmp;
+            tmp = slots[i];
         }
-        prev = tmp;
-        tmp = prev->next;
-    }
-    if (!tmp)
-    {
-        prev->next = timer;
-        timer->prev = prev;
-        timer->next = nullptr;
-        tail = timer;
     }
 }
-void time_wheel::add_timer(tw_timer *timer)
-{
-    if (!timer)
-        return;
-    if (!head)
-    {
-        head = tail = timer;
-        return;
-    }
-    if (timer->expire < head->expire)
-    {
-        timer->next = head;
-        head->prev = timer;
-        head = timer;
-        return;
-    }
-    add_timer(timer, head);
-}
 
-void time_wheel::ajust_timer(tw_timer *timer)
+void time_wheel::add_timer(int timeout)
 {
-    if (!timer)
-        return;
 
-    auto tmp = timer->next;
-    if (!tmp || timer->expire < tmp->expire)
+    int ticks = timeout < SI ? SI : timeout / SI;
+    int rotation = ticks / N;
+    int ts = (cur_slot + ticks % N) % N;
+
+    auto time = new tw_timer(rotation, ts);
+
+    if (!slots[ts])
     {
-        return;
-    }
-    if (timer == head)
-    {
-        head = head->next;
-        head->prev = nullptr;
-        tmp->next = nullptr;
-        add_timer(timer, head);
+        slots[ts] = time;
     }
     else
     {
-        timer->prev->next = timer->next;
-        timer->next->prev = timer->prev;
-        add_timer(timer, head);
+        slots[ts]->prev = time;
+        time->next = slots[ts];
+        slots[ts] = time;
     }
 }
+
 void time_wheel::del_timer(tw_timer *timer)
 {
     if (!timer)
     {
         return;
     }
-    if (timer == head && timer == tail)
+    auto ts = timer->time_slot;
+    if (slots[ts] == timer)
     {
-        delete timer;
-        head = nullptr;
-        tail = nullptr;
-        return;
+        slots[ts] = timer->next;
+        if (slots[ts])
+        {
+            slots[ts]->prev = nullptr;
+        }
     }
-    if (head == timer)
+    else
     {
-        head = head->next;
-        head->prev = nullptr;
-        delete timer;
-        return;
+        timer->prev->next = timer->next;
+        if (timer->next)
+        {
+            timer->next->prev = timer->prev;
+        }
     }
-    if (tail == timer)
-    {
-        tail = tail->prev;
-        tail->next = nullptr;
-        delete timer;
-        return;
-    }
+    delete timer;
 }
 void time_wheel::tick()
 {
 
-    if (!head)
-        return;
-    std::cout << "timer tick \n";
-
-    time_t cur = time(NULL);
-    auto tmp = head;
-
-    while (tmp)
     {
-        if (cur < tmp->expire)
-            break;
-        tmp->cb_func(tmp->userdata);
+        auto head = slots[cur_slot];
+        if (!head)
+            return;
+        std::cout << "timer tick \n";
 
-        head = tmp->next;
-        if (head)
-            head->prev = nullptr;
-        delete tmp;
-        tmp = head;
+        time_t cur = time(NULL);
+        auto tmp = head;
+
+        while (tmp)
+        {
+            if (tmp->rotation > 0)
+            {
+                tmp->rotation--;
+                tmp = tmp->next;
+                continue;
+            }
+            tmp->cb_func(tmp->userdata);
+
+            if (tmp == head)
+            {
+                slots[cur_slot] = tmp->next;
+                if (slots[cur_slot])
+                    slots[cur_slot]->prev = nullptr;
+                tmp = slots[cur_slot];
+            }
+            else
+            {
+                tmp->prev->next = tmp->next;
+                if (tmp->next)
+                {
+                    tmp->next->prev = tmp->prev;
+                }
+                tmp = tmp->next;
+
+            }
+            delete tmp;
+        }
+        cur_slot = ++cur_slot % N;
     }
-}
 #endif
