@@ -79,7 +79,7 @@ template <typename T>
 class processpool
 {
 private:
-    processpool(int listenfd, int process_number);
+    processpool(int listenfd, int process_number = 8);
 
     void setup_sig_pipe();
     void run_parent();
@@ -341,7 +341,6 @@ void processpool<T>::run_child()
                 int client = 0;
                 int ret = recv(pipefd, (char *)&client, sizeof(client), 0);
                 printf("child recv:%d,%d\n", client, client);
-        
 
                 if (ret <= 0)
                 {
