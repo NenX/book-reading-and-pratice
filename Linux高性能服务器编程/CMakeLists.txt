@@ -43,7 +43,7 @@ foreach(mainfile IN LISTS mains)
     else()
     endif()
 
-    if(lastDirName MATCHES "(9)")
+    if(lastDirName MATCHES "(9|14)")
         # pthread
         target_link_libraries(${targetName} PRIVATE Threads::Threads)
         # pthread
