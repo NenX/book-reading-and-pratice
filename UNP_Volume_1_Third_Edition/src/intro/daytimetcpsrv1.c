@@ -28,7 +28,11 @@ int main(int argc, char **argv)
         len = sizeof(cliaddr);
         connfd = Accept(listenfd, (struct sockaddr *)&cliaddr, &len);
 
-        printf("Connection from %s, port %d\n",Inet_ntop(AF_INET,&cliaddr.sin_addr,buf,MAXLINE),ntohs(cliaddr.sin_port));
+        printf("Connection from %s, port %d, server port %d\n",
+        Inet_ntop(AF_INET,&cliaddr.sin_addr,buf,MAXLINE),
+        ntohs(cliaddr.sin_port),
+        ntohs(servaddr.sin_port)
+        );
 
         ticks = time(NULL);
         snprintf(buf,MAXLINE,"ticks: %.24s\r\n",ctime(&ticks));
