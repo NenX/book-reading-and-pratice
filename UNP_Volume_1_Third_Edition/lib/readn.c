@@ -7,7 +7,9 @@ ssize_t readn(int fd, void *vptr, size_t n)
     void *curPos = vptr;
     while (nleft > 0)
     {
-        if ((nread = read(fd, curPos, nleft)) < 0)
+        nread = read(fd, curPos, nleft);
+        printf("readn:%d\n",nread);
+        if (nread < 0)
         {
             if (errno == EINTR)
             {

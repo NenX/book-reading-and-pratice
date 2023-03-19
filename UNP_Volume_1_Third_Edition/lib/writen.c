@@ -4,7 +4,7 @@ ssize_t writen(int fd, void *vptr, size_t n)
 {
     ssize_t nwritten = 0;
     size_t nleft = n;
-    char *pos = vprintf;
+    char *pos = vptr;
     while (nleft > 0)
     {
         if ((nwritten = write(fd, pos, nleft)) <= 0)
