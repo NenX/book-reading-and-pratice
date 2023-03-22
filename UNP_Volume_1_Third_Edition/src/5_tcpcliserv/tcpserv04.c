@@ -19,7 +19,7 @@ void str_echo(int connfd)
    char buf[MAXLINE];
    char buf2[MAXLINE];
    int n;
-
+   int pid = getpid();
    while (1)
    {
    again:
@@ -35,9 +35,10 @@ void str_echo(int connfd)
          break;
       }
       buf[n] = 0;
-      snprintf(buf2, MAXLINE, "xxxx:%s", buf);
+      snprintf(buf2, MAXLINE, "pid %d:%s",pid, buf);
       writen(connfd, buf2, strlen(buf2));
       writen(STDOUT_FILENO, buf2, strlen(buf2));
+
    }
 }
 
