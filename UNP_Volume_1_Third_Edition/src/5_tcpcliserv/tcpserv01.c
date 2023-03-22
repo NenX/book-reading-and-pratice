@@ -3,6 +3,14 @@
 #include <time.h>
 #include "readn.h"
 #include "writen.h"
+
+void sig_chld(int signo)
+{
+    int pid, status;
+    pid = wait(&status);
+    printf("child %d terminated\n", pid);
+}
+
 void str_echo(int connfd)
 {
     char buf[MAXLINE];
@@ -48,6 +56,7 @@ int main(int argc, char **argv)
     Bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 
     Listen(listenfd, LISTENQ);
+    Signal(SIGCHLD, sig_chld);
     while (1)
     {
         len = sizeof(cliaddr);

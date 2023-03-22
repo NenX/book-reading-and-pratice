@@ -202,3 +202,5 @@
 /* #undef uint32_t */
 /* -bit unsigned type */
 /* #undef uint8_t */
+
+#define _GNU_SOURCE 1
