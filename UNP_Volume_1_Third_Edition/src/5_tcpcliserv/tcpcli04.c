@@ -12,10 +12,15 @@ void str_cli(FILE *fp, int sockfd)
     {
 
         writen(sockfd, sendline, strlen(sendline));
-
+        sleep(4);
         n = readline(sockfd, recv, MAXLINE);
         if (n == -1)
             err_sys("str_cli: -1");
+        if (n == 0)
+        {
+            printf("str_cli readline return 0\n");
+            // err_sys("str_cli readline return 0: server terminated prematurely!!");
+        }
         fputs(recv, stdout);
     }
 }
