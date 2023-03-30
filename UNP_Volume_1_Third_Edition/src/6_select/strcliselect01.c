@@ -3,7 +3,7 @@
 #include "readlilne.h"
 #include "readn.h"
 #include "writen.h"
-#define SOCK_NUM 5
+#define SOCK_NUM 1
 void str_cli(FILE *int_stream, int sockfd)
 {
     fd_set rset;
@@ -11,37 +11,51 @@ void str_cli(FILE *int_stream, int sockfd)
     int max_fd = max(fd_no, sockfd);
     char buf[MAXLINE];
     int read_n, write_n;
+    int stdineof = 0;
     while (1)
     {
         FD_SET(sockfd, &rset);
-        FD_SET(fd_no, &rset);
+        if (stdineof == 0)
+            FD_SET(fd_no, &rset);
+
         Select(max_fd + 1, &rset, NULL, NULL, NULL);
 
         if (FD_ISSET(sockfd, &rset))
         {
-            fputs("sockfd can read\n", stdout);
 
             bzero(buf, MAXLINE);
-            if ((read_n = readline(sockfd, buf, MAXLINE)) < 0)
+            if ((read_n = readline_slow(sockfd, buf, MAXLINE)) < 0)
             {
                 err_sys("str_cli: read -1");
             }
             if (read_n == 0)
             {
-                err_sys("str_cli: read 0 EOL");
+                if (stdineof == 1)
+                {
+                    printf("close success!\n");
+                    return;
+                }
+                else
+                    err_sys("str_cli: read 0 EOL");
             }
             fputs(buf, stdout);
         }
         if (FD_ISSET(fd_no, &rset))
         {
-            fputs("input can read\n", stdout);
 
             bzero(buf, MAXLINE);
             if (fgets(buf, MAXLINE, int_stream) == NULL)
             {
-                return;
+                stdineof = 1;
+                FD_CLR(fd_no, &rset);
+                Shutdown(sockfd, SHUT_WR);
+                continue;
             }
+
+            // Denial-of-Service Attacks 拒绝访问攻击
+            buf[strlen(buf) - 1] = '\0';
             writen(sockfd, buf, strlen(buf));
+            // sleep(1);
         }
     }
 }
