@@ -17,6 +17,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib")
 file(GLOB_RECURSE mains RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 file(GLOB libs RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/lib/*")
 
+add_library(lept ${libs})
 
 
 foreach(mainfile IN LISTS mains)
@@ -33,7 +34,8 @@ foreach(mainfile IN LISTS mains)
     file(GLOB local_headers RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${dirname}/*.h")
 
     # message("------------:" ${local_headers})
-    add_executable(${targetName} ${mainfile} ${libs} ${local_headers})
+    add_executable(${targetName} ${mainfile} ${local_headers})
+    target_link_libraries(${targetName} lept)
 
     if(lastDirName MATCHES "(8|21)")
         # crypt()
