@@ -1,6 +1,10 @@
 
-// syscall 调用见 #include <sys/syscall.h>
 // 
+// syscall 调用见 #include <sys/syscall.h>
+// 编译 gcc -c -fno-stack-protector -fno-builtin nomain.cpp
+// 链接
+// 第一种：ld -e nomain nomain.o
+// 第二种：ld -T nomain.lds nomain.o
 asm(
     ".text\n"
     ".global Add\n"
