@@ -3,8 +3,8 @@
 #define MAX_N 2
 
 int x[MAX_N] = {1, 2};
-int y[MAX_N] = {1, 2};
-int z[MAX_N];
+int y[MAX_N] = {4, 5};
+int z[MAX_N] = {22,33};
 
 int main(int argc, char const *argv[])
 {
