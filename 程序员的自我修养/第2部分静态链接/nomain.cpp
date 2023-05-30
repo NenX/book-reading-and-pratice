@@ -5,6 +5,7 @@
 // 链接
 // 第一种：ld -e nomain nomain.o
 // 第二种：ld -T nomain.lds nomain.o
+#include "nomain.h"
 asm(
     ".text\n"
     ".global Add\n"
@@ -12,11 +13,16 @@ asm(
     "Add:\n"
     "leal 1(%rdi,%rsi), %eax\n"
     "ret");
-char str[] = {'a', 'b', 'c', '?', '\n', 0};
-extern int sssbbb;
+char str[16] = {'a', 'b', 'c', '?', '\n', 0};
+char str2[16] ;
+extern char str3 ;
+long long_value;
 extern "C" void pp(char c)
 {
-    str[3] = c;
+    str[0] = c;
+    str2[0] = c;
+    str3 = c;
+    long_value++;
     long long n;
     asm volatile(
         "syscall\t\n"
@@ -36,8 +42,9 @@ extern "C" int nomain(int argc, char **argv)
 {
     int b = 1, c = 2;
     int a = Add(b, c);
-    pp('a' + a + sssbbb);
-    pp('a' + a + sssbbb);
+    char d = 'b' + a;
+    pp(d + a_int);
+    pp(d);
     myexit();
     return 0;
 }
