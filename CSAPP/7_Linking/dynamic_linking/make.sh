@@ -19,7 +19,7 @@ rm -f *.o *.a *.out *.dump *.so
 
 # readelf -S -r -s main2_2.out > _main2_2.dump
 # objdump -d main2_2.out >> _main2_2.dump
-export LD_LIBRARY_PATH=$(pwd)
+
 gcc -Iinclude  -shared -fPIC addvec.cpp multvec.cpp -o libvector.so
 gcc -Iinclude  -shared -fPIC vectorImpl.cpp -o libvectorimpl.so
 
