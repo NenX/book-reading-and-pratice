@@ -9,8 +9,6 @@ createServer((req, res) => {
     res.flushHeaders()
     res.write('ssssbbbb\n');
 
-    setTimeout(() => {
-        res.end();
+    res.end();
 
-    }, 5000);
 }).listen(2288)
