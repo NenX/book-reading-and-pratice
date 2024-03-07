@@ -59,6 +59,11 @@ int main(int argc, char const *argv[])
     int connfd = accept(listenfd, (struct sockaddr *)&client_address, &client_addresslength);
 
     memset(buffer, '\0', BUFFER_SIZE);
+    ret = recv(connfd, buffer, BUFFER_SIZE - 1, MSG_OOB);
+    printf("got %d bytes of !!!!!!!!!!!! data: %s\n",ret,buffer);
+
+
+    memset(buffer, '\0', BUFFER_SIZE);
     ret = recv(connfd, buffer, BUFFER_SIZE - 1, 0);
     printf("got %d bytes of normal data: %s\n",ret,buffer);
 

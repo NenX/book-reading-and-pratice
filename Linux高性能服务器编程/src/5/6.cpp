@@ -54,14 +54,15 @@ int main(int argc, char const *argv[])
         errExit("connect");
     }
 
-    char oob_data[] = "ooobbb";
+    char oob_data[] = "01234";
+    char oob_data2[] = "56789";
     char normal_data[] = "normal";
 
     send(sockfd, normal_data, strlen(normal_data), 0);
     send(sockfd, oob_data, strlen(oob_data), MSG_OOB);
-    sleep(2);
 
     send(sockfd, normal_data, strlen(normal_data), 0);
+    send(sockfd, oob_data2, strlen(oob_data2), MSG_OOB);
 
     close(sockfd);
 
