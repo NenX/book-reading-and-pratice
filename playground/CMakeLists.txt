@@ -38,9 +38,9 @@ foreach(mainfile IN LISTS mains)
 
 
     # if(lastDirName MATCHES "(9|14)")
-    #     # pthread
-    #     target_link_libraries(${targetName} PRIVATE Threads::Threads)
-    #     # pthread
+        # pthread
+        target_link_libraries(${targetName} PRIVATE Threads::Threads)
+        # pthread
     # endif()
     
 
