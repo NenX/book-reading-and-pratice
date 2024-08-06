@@ -1,21 +1,29 @@
-use std::{collections::HashMap, fs::File, num::IntErrorKind};
+use std::{clone, collections::HashMap, fmt::Debug, fs::File, hash::Hash, num::IntErrorKind};
 
 use test_mod::{
-    test_error, test_hashmap, test_iterator, test_macro_derive, test_macro_ruls, test_string_and_str
+    test_error, test_hashmap, test_iterator, test_macro_derive, test_macro_ruls,
+    test_string_and_str,
 };
 mod test_mod;
 // use rand::Rng;
 static ARR: [i32; 3] = [1, 2, 999];
 fn main() {
-    // test_macro_ruls::test();
-    // test_macro_derive::test();
-    // test_string_and_str::test();
-    // test_iterator::test();
-    //    test_hashmap::test();
+    let mut m: HashMap<String, String> = HashMap::new();
+    let mut m1: HashMap<i32, i32> = HashMap::new();
+    let opt_raw = m.get(&"".to_string());
+    let opt_raw1 = m1.get(&11);
+    let opt_cpy = opt_raw1.copied();
+    // 这里出错：the trait bound `String: Copy` is not satisfied
+    // the trait `Copy` is not implemented for `String`
+    // let opt_cpy1 = opt_raw.copied();
 
-    // test_error::test();
 
-    let a:Result<i32,IntErrorKind> = Ok(123);
-    let b = a.ok();
-    let c = b.ok_or(IntErrorKind::Empty);
+    let a = Some(1);
+    let b: Result<i32, IntErrorKind> = Ok(1);
+
+    let c = a.ok_or(IntErrorKind::Empty);
+
+    let d = b.ok();
 }
+
+

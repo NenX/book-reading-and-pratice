@@ -6,3 +6,6 @@ pub mod test_hashmap;
 pub mod  test_error;
 pub mod  test_trait;
 pub mod  test_lifetime;
+pub mod test_smart_pointer;
+
+pub mod test_thread;
