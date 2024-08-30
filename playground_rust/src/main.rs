@@ -13,9 +13,6 @@ fn main() {
     let opt_raw = m.get(&"".to_string());
     let opt_raw1 = m1.get(&11);
     let opt_cpy = opt_raw1.copied();
-    // 这里出错：the trait bound `String: Copy` is not satisfied
-    // the trait `Copy` is not implemented for `String`
-    // let opt_cpy1 = opt_raw.copied();
 
 
     let a = Some(1);
