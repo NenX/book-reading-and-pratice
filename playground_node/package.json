@@ -4,8 +4,9 @@
   "description": "",
   "main": "clear.js",
   "scripts": {
-    "ws-server": "swc src/my_ws/ws_server.ts -o dist/ws_server.mjs && node dist/ws_server.mjs"
+    "ws-server": "swc  src/my_ws/WsMessage.ts src/my_ws/ws_server.ts -d dist && node dist/my_ws/ws_server.js"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

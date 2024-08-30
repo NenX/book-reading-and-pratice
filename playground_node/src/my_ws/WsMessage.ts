@@ -1,9 +1,8 @@
 import { createServer, Socket } from 'net'
 import { createHash } from 'crypto'
-import { WsMessage } from './WsMessage'
 const GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
 
-class WsMessage2<T extends string | Buffer> {
+export class WsMessage<T extends string | Buffer> {
     data: T
     constructor(d: T) {
         this.data = d
@@ -92,74 +91,3 @@ class WsMessage2<T extends string | Buffer> {
 
 }
 
-function serve() {
-    createServer(s => {
-        let is_upgrade: boolean | undefined
-        s.on('ready', () => {
-        })
-        s.on('data', b => {
-            if (!is_upgrade) {
-                is_upgrade = handshake(s, b)
-                return
-            }
-            const m = WsMessage.encode(b)
-            console.log("receive message", m?.toString())
-            const a = new WsMessage("aa")
-            s.write(a.decode())
-
-            const a2 = new WsMessage(Buffer.from([1, 2, 3]))
-            const aa = [...a2.decode()]
-            aa.pop()
-            s.write(Buffer.from(aa))
-            setTimeout(() => {
-                s.write(Buffer.from([4]))
-            }, 2000)
-        })
-    }).listen(6600)
-}
-
-function handshake(s: Socket, b: Buffer) {
-
-    const data = b.toString();
-    console.log('read', data)
-    const lines = data.split('\r\n').filter(_ => _)
-    const request_line = lines[0]
-    if (!request_line?.toLowerCase()?.startsWith('get')) {
-        return
-    }
-    const headers = lines.slice(1).reduce((a, b) => {
-        const kv = b.split(':')
-
-        return { ...a, [kv[0].trim()]: kv[1]?.trim() }
-    }, {})
-
-    if (headers['Connection'] !== 'Upgrade' || headers['Upgrade'] !== 'websocket') {
-        return
-    }
-    const key = headers['Sec-WebSocket-Key']
-    const sha1 = createHash('sha1')
-
-    const accept = sha1.update(key + GUID)
-        .digest('base64');
-
-    let response: string[] = []
-    response.push('HTTP/1.1 101 Switching Protocols\r\n')
-    response.push('Upgrade: websocket\r\n')
-    response.push('Connection: Upgrade\r\n')
-    response.push(`Sec-WebSocket-Accept: ${accept}\r\n\r\n`);
-
-
-
-    const response_txt = response.join('')
-    console.log(JSON.stringify(response_txt))
-    s.write(response_txt)
-    return true
-}
-
-
-function main() {
-
-    serve()
-}
-
-main()

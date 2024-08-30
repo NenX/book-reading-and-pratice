@@ -44,45 +44,6 @@ function _iterable_to_array(iter) {
 function _non_iterable_spread() {
     throw new TypeError("Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
-function _object_spread(target) {
-    for(var i = 1; i < arguments.length; i++){
-        var source = arguments[i] != null ? arguments[i] : {};
-        var ownKeys = Object.keys(source);
-        if (typeof Object.getOwnPropertySymbols === "function") {
-            ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function(sym) {
-                return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-            }));
-        }
-        ownKeys.forEach(function(key) {
-            _define_property(target, key, source[key]);
-        });
-    }
-    return target;
-}
-function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-    if (Object.getOwnPropertySymbols) {
-        var symbols = Object.getOwnPropertySymbols(object);
-        if (enumerableOnly) {
-            symbols = symbols.filter(function(sym) {
-                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-            });
-        }
-        keys.push.apply(keys, symbols);
-    }
-    return keys;
-}
-function _object_spread_props(target, source) {
-    source = source != null ? source : {};
-    if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-        ownKeys(Object(source)).forEach(function(key) {
-            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-    }
-    return target;
-}
 function _to_consumable_array(arr) {
     return _array_without_holes(arr) || _iterable_to_array(arr) || _unsupported_iterable_to_array(arr) || _non_iterable_spread();
 }
@@ -94,18 +55,15 @@ function _unsupported_iterable_to_array(o, minLen) {
     if (n === "Map" || n === "Set") return Array.from(n);
     if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _array_like_to_array(o, minLen);
 }
-import { createServer } from 'net';
-import { createHash } from 'crypto';
-import { WsMessage } from './WsMessage';
 var GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
-var WsMessage2 = /*#__PURE__*/ function() {
+export var WsMessage = /*#__PURE__*/ function() {
     "use strict";
-    function WsMessage2(d) {
-        _class_call_check(this, WsMessage2);
+    function WsMessage(d) {
+        _class_call_check(this, WsMessage);
         _define_property(this, "data", void 0);
         this.data = d;
     }
-    _create_class(WsMessage2, [
+    _create_class(WsMessage, [
         {
             key: "as_buffer",
             value: function as_buffer() {
@@ -194,71 +152,5 @@ var WsMessage2 = /*#__PURE__*/ function() {
             }
         }
     ]);
-    return WsMessage2;
+    return WsMessage;
 }();
-function serve() {
-    createServer(function(s) {
-        var is_upgrade;
-        s.on('ready', function() {});
-        s.on('data', function(b) {
-            if (!is_upgrade) {
-                is_upgrade = handshake(s, b);
-                return;
-            }
-            var m = WsMessage.encode(b);
-            console.log("receive message", m === null || m === void 0 ? void 0 : m.toString());
-            var a = new WsMessage("aa");
-            s.write(a.decode());
-            var a2 = new WsMessage(Buffer.from([
-                1,
-                2,
-                3
-            ]));
-            var aa = _to_consumable_array(a2.decode());
-            aa.pop();
-            s.write(Buffer.from(aa));
-            setTimeout(function() {
-                s.write(Buffer.from([
-                    4
-                ]));
-            }, 2000);
-        });
-    }).listen(6600);
-}
-function handshake(s, b) {
-    var _request_line_toLowerCase;
-    var data = b.toString();
-    console.log('read', data);
-    var lines = data.split('\r\n').filter(function(_) {
-        return _;
-    });
-    var request_line = lines[0];
-    if (!(request_line === null || request_line === void 0 ? void 0 : (_request_line_toLowerCase = request_line.toLowerCase()) === null || _request_line_toLowerCase === void 0 ? void 0 : _request_line_toLowerCase.startsWith('get'))) {
-        return;
-    }
-    var headers = lines.slice(1).reduce(function(a, b) {
-        var _kv_;
-        var kv = b.split(':');
-        return _object_spread_props(_object_spread({}, a), _define_property({}, kv[0].trim(), (_kv_ = kv[1]) === null || _kv_ === void 0 ? void 0 : _kv_.trim()));
-    }, {});
-    if (headers['Connection'] !== 'Upgrade' || headers['Upgrade'] !== 'websocket') {
-        return;
-    }
-    var key = headers['Sec-WebSocket-Key'];
-    var sha1 = createHash('sha1');
-    var accept = sha1.update(key + GUID).digest('base64');
-    var response = [];
-    response.push('HTTP/1.1 101 Switching Protocols\r\n');
-    response.push('Upgrade: websocket\r\n');
-    response.push('Connection: Upgrade\r\n');
-    response.push("Sec-WebSocket-Accept: ".concat(accept, "\r\n\r\n"));
-    var response_txt = response.join('');
-    console.log(JSON.stringify(response_txt));
-    s.write(response_txt);
-    return true;
-}
-function main() {
-    serve();
-}
-main();
-

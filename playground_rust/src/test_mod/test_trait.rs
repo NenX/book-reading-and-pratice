@@ -54,7 +54,3 @@ pub fn test() {
     ms2.trans();
 }
 
-
-fn longest(s1: & str, s2: & str) -> & str {
-    if s1.len() > s2.len() { s1 } else { s2 }
-}
