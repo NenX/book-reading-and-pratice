@@ -1,5 +1,8 @@
 use std::{
-    cell::RefCell, ops::{Deref, DerefMut}, os::unix::thread, rc::Rc, thread::spawn
+    cell::RefCell,
+    ops::{Deref, DerefMut},
+    rc::Rc,
+    thread::spawn,
 };
 #[derive(Debug)]
 struct MyPointerLike<T: Clone>(T, T);
@@ -41,10 +44,10 @@ fn test() {
 
     let mut b = Rc::new(RefCell::new(1));
 
-    let  mut bb = Rc::clone(&mut b);
-    let mut  bbr  = bb.borrow_mut();
+    let mut bb = Rc::clone(&mut b);
+    let mut bbr = bb.borrow_mut();
     *bbr = 99;
 
-    let a= b.as_ptr();
+    let a = b.as_ptr();
     let b = bb.as_ptr();
 }
