@@ -10,3 +10,5 @@ set(CMAKE_C_STANDARD 99)
 add_library(static_for_rust static.c)
 add_library(dylib_for_rust SHARED dylib.c)
 
+
+# ==============

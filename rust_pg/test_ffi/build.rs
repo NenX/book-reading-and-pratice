@@ -14,6 +14,7 @@ fn main() {
     
     if cfg!(target_os = "windows"){
 
+        fs::copy("./c_libs/dylib_for_rust.dll", "./target/debug/dylib_for_rust.dll").expect("copy dll");
     }else{
         fs::copy("./c_libs/libdylib_for_rust.so", "./target/debug/libdylib_for_rust.so").expect("copy so");
     }

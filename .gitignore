@@ -2,7 +2,7 @@ build/
 .vscode/
 *.o
 *.out
-*.so
+
 *.a
 *.dump
 target/
