@@ -1,3 +1,5 @@
+// 这是我们的入口文件，用来调用静态库和动态库
+// This is our entry file for calling both static and dynamic libraries
 extern crate core;
 use core::ffi::c_int;
 

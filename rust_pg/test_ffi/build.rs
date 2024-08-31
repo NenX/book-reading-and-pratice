@@ -1,5 +1,6 @@
+// 这是我们的构建脚本，在编译开始前，告诉 Rustc 怎么去找到我们的冬
 use std::ffi::OsStr;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::{env, fs};
 
 extern crate cc;
@@ -10,7 +11,6 @@ fn move_dylib_files(from_dir: &Path, to_dir: &Path) -> std::io::Result<()> {
     }
 
     for entry in fs::read_dir(from_dir)? {
-
         let entry = entry?;
         let path = entry.path();
         let ext = path.extension();

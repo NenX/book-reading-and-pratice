@@ -1,3 +1,5 @@
+# 在 windows 系统调用 MSBuild 编译动态库和静态库
+# Call MSBuild on windows system to compile dynamic and static libraries
 param(
     [switch]$Help
 )

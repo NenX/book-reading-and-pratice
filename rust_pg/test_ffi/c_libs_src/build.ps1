@@ -1,4 +1,6 @@
 
+# 在 Windows 使用这个脚本调用 ms_build.ps1 来编译动态库和静态库
+# On Windows, use this script to call ms_build.ps1 to compile dynamic and static libraries
 if (-Not (Test-Path -Path "build")) {
     New-Item -Path "build" -ItemType Directory
 }
@@ -11,16 +13,10 @@ Set-Location ..
 
 .\ms_build.ps1 .\build\dylib_for_rust.sln /p:Configuration=Release
 
-
-
-
-
-# 获取源文件夹中的所有文件
 $files = Get-ChildItem -Path ..\c_libs\Release -File
 
-# 移动每个文件到目标文件夹
 foreach ($file in $files) {
-    Move-Item -Path $file.FullName -Destination ..\c_libs
+    Move-Item -Path $file.FullName -Destination ..\c_libs -Force
 }
 
 
