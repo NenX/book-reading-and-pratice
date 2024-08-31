@@ -9,7 +9,7 @@ int32_t
 dylib_call(int32_t a, int32_t b)
 {
     int32_t result = a + b;
-    printf("[C] dylib_call: Argument a is: %i, Argument b is:%i \n", a, b);
+    printf("[C] dylib_call: Argument a is:{ %i }, Argument b is:{ %i } \n", a, b);
     printf("[C] dylib_call: returning the result { %i } to Rust\n", result);
     return result;
 }
