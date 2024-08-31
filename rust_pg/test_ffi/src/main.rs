@@ -8,25 +8,18 @@ extern "C" {
 }
 
 fn main() {
-    println!("[Rust] Hello from Rust! 🦀");
 
     unsafe {
-        println!("[Rust] Calling function in C..");
+        println!("[Rust] Calling function in C file");
+        let result = add(1, 5);
+        println!("[Rust] Result from c file: {} \n", result);
 
-        let result = add(5000, 5);
+        println!("[Rust] Calling function in static library");
+        let result = static_call(10, 5);
+        println!("[Rust] Result from static library: {}\n", result);
 
-        println!("[Rust] Result: {}", result);
-
-        println!("[Rust static_call] Calling function in C..");
-
-        let result = static_call(5000, 5);
-
-        println!("[Rust static_call] Result: {}", result);
-
-        println!("[Rust dylib_call] Calling function in C..");
-
-        let result = dylib_call(5000, 5);
-
-        println!("[Rust dylib_call] Result: {}", result);
+        println!("[Rust] Calling function in dynamic library");
+        let result = dylib_call(100, 5);
+        println!("[Rust] Result from dynamic library: {}\n", result);
     }
 }
