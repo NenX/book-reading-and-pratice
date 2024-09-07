@@ -1,9 +1,4 @@
-use std::fmt::format;
-use std::fs::{self, File};
-use std::io::Read;
-use std::net::Ipv4Addr;
 
-use mini_redis::Buffer;
 use my_rs::my_dns::packet::MyDnsPacket;
 use my_rs::my_dns::types::MyDns_Result;
 use my_rs::my_dns::{dns_mock_response_packet, BytePacketBuffer};

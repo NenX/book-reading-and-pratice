@@ -1,4 +1,3 @@
-use std::net::Ipv4Addr;
 
 use super::dns_header::MyDnsHeader;
 use super::question::{DnsQuestion, QueryType};
@@ -13,6 +12,12 @@ pub struct MyDnsPacket {
     pub answers: Vec<MyDnsRecord>,
     pub authorities: Vec<MyDnsRecord>,
     pub resources: Vec<MyDnsRecord>,
+}
+
+impl Default for MyDnsPacket {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl MyDnsPacket {

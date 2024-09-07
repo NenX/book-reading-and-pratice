@@ -1,14 +1,9 @@
-use std::fmt::format;
-use std::fs::{self, File};
-use std::io::Read;
-use std::net::Ipv4Addr;
 
-use mini_redis::Buffer;
 use my_rs::my_dns::dns_header::MyDnsHeader;
 use my_rs::my_dns::packet::MyDnsPacket;
 use my_rs::my_dns::question::{DnsQuestion, QueryType};
 use my_rs::my_dns::record::MyDnsRecord;
-use my_rs::my_dns::types::{MyDns_Result, ResultCode};
+use my_rs::my_dns::types::ResultCode;
 use my_rs::my_dns::{dns_mock_response_packet, BytePacketBuffer};
 
 #[test]
@@ -42,7 +37,7 @@ fn test_question() {
     let mut buffer: BytePacketBuffer = dns_mock_response_packet().into();
 
     let packet = MyDnsPacket::from_buffer(&mut buffer).expect("from buffer");
-    let q1 = packet.questions.get(0).unwrap();
+    let q1 = packet.questions.first().unwrap();
     let q = DnsQuestion::new("baidu.com".to_string(), QueryType::A);
     assert_eq!(*q1, q);
 }
@@ -52,7 +47,7 @@ fn test_answer_domain() {
     let mut buffer: BytePacketBuffer = dns_mock_response_packet().into();
 
     let packet = MyDnsPacket::from_buffer(&mut buffer).expect("from buffer");
-    let q1 = packet.answers.get(0).unwrap();
+    let q1 = packet.answers.first().unwrap();
     match q1 {
         MyDnsRecord::UNKNOWN {
             domain,

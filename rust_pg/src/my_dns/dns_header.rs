@@ -25,6 +25,12 @@ pub struct MyDnsHeader {
     pub resource_entries: u16,      // 16 bits
 }
 
+impl Default for MyDnsHeader {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MyDnsHeader {
     pub fn new() -> MyDnsHeader {
         MyDnsHeader {

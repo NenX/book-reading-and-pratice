@@ -1,6 +1,6 @@
 use std::{
     error::Error,
-    io::{BufRead, BufReader, BufWriter, Write},
+    io::{BufReader, BufWriter, Write},
     net::TcpListener,
 };
 

@@ -36,7 +36,7 @@ impl MyDnsRecord {
                     ((raw_addr >> 24) & 0xFF) as u8,
                     ((raw_addr >> 16) & 0xFF) as u8,
                     ((raw_addr >> 8) & 0xFF) as u8,
-                    ((raw_addr >> 0) & 0xFF) as u8,
+                    (raw_addr & 0xFF) as u8,
                 );
 
                 Ok(MyDnsRecord::A { domain, addr, ttl })

@@ -9,6 +9,12 @@ impl From<MyDns_Buf> for BytePacketBuffer {
         Self { pos: 0, buf: value }
     }
 }
+impl Default for BytePacketBuffer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BytePacketBuffer {
     pub fn new() -> Self {
         Self {
@@ -92,8 +98,8 @@ impl BytePacketBuffer {
             outstr.push_str(delimiter);
             delimiter = ".";
             let slice = self.get_range(self.pos, len)?;
-            let s = String::from_utf8_lossy(slice.into());
-            outstr.push_str(&s.to_string());
+            let s = String::from_utf8_lossy(slice);
+            outstr.push_str(s.as_ref());
             self.step(len)?;
         }
         println!("read_qname_plain ==> {}", outstr);

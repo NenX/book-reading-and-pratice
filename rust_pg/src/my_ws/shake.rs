@@ -1,5 +1,5 @@
 use base64::Engine;
-use ring::digest::{self, SHA1_FOR_LEGACY_USE_ONLY};
+use ring::digest::{SHA1_FOR_LEGACY_USE_ONLY};
 use std::{
     collections::BTreeMap,
     error::Error,
