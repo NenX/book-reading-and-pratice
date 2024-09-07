@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut r = BufReader::new(&s);
 
         handshake(&mut r, &mut w)?;
-        let long_bin = WsMessage::Binary([97;512].to_vec());
+        let long_bin = WsMessage::Binary([97; 512].to_vec());
 
         let short_text = WsMessage::Text("我是你跌".to_owned());
         let a = String::from_utf8_lossy(&[b'%'; 122]);
@@ -30,9 +30,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         w.write_all(&long_text.encode()).expect("write");
         w.flush()?;
         println!("write end");
-        handle_connection(&mut r,&mut w)?;
+        handle_connection(&mut r, &mut w)?;
         println!("read end");
-
     }
 }
 #[test]

@@ -3,7 +3,6 @@ use std::{
     io::{self, BufRead, ErrorKind},
 };
 
-
 #[derive(Debug)]
 pub enum WsMessage {
     Text(String),

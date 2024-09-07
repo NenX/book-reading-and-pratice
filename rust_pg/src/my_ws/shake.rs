@@ -1,10 +1,10 @@
+use base64::Engine;
+use ring::digest::{self, SHA1_FOR_LEGACY_USE_ONLY};
 use std::{
     collections::BTreeMap,
     error::Error,
     io::{BufRead, Write},
 };
-use base64::Engine;
-use ring::digest::{self, SHA1_FOR_LEGACY_USE_ONLY};
 const GUID: &[u8] = b"258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 pub fn handshake(reader: &mut impl BufRead, writer: &mut impl Write) -> Result<(), Box<dyn Error>> {
