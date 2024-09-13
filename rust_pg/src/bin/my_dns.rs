@@ -1,27 +1,16 @@
+use std::{fs, net::UdpSocket};
 
-use my_rs::my_dns::packet::MyDnsPacket;
-use my_rs::my_dns::types::MyDns_Result;
-use my_rs::my_dns::{dns_mock_response_packet, BytePacketBuffer};
-
-fn main() -> MyDns_Result<()> {
-    // let mut buffer = BytePacketBuffer::new();
-    let mut buffer: BytePacketBuffer = dns_mock_response_packet().into();
-
-    let packet = MyDnsPacket::from_buffer(&mut buffer).expect("from buffer");
-    println!("header {:#?}", packet.header);
-
-    for q in packet.questions {
-        println!("questions {:#?}", q);
+use my_rs::my_dns::{
+    packet::MyDnsPacket, question::DnsQuestion, server::handle_query, types::MyDnsQueryType,
+    BytePacketBuffer,
+};
+// depart apart
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // let socket = UdpSocket::bind(("0.0.0.0", 2053))?;
+    let socket = UdpSocket::bind("0.0.0.0:2053")?;
+    println!("Upd listen at 2233");
+    // let socket = UdpSocket::bind("0.0.0.0:1234")?;
+    loop {
+        handle_query(&socket)?
     }
-    for rec in packet.answers {
-        println!("answers {:#?}", rec);
-    }
-    for rec in packet.authorities {
-        println!("authorities {:#?}", rec);
-    }
-    for rec in packet.resources {
-        println!("resources {:#?}", rec);
-    }
-
-    Ok(())
 }

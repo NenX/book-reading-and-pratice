@@ -2,12 +2,12 @@ use std::error::Error;
 
 pub const MY_DNS_MAX_POS_BOUND: usize = 512;
 
-pub type MyDns_Error = Box<dyn Error>;
-pub type MyDns_Result<T> = Result<T, MyDns_Error>;
-pub type MyDns_Buf = [u8; 512];
+pub type MyDnsError = Box<dyn Error>;
+pub type MyDnsResult<T> = Result<T, MyDnsError>;
+pub type MyDnsBuf = [u8; 512];
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum ResultCode {
+pub enum MyDnsResultCode {
     NOERROR = 0,
     FORMERR = 1,
     SERVFAIL = 2,
@@ -16,15 +16,49 @@ pub enum ResultCode {
     REFUSED = 5,
 }
 
-impl ResultCode {
-    pub fn from_num(num: u8) -> ResultCode {
+impl MyDnsResultCode {
+    pub fn from_num(num: u8) -> MyDnsResultCode {
         match num {
-            1 => ResultCode::FORMERR,
-            2 => ResultCode::SERVFAIL,
-            3 => ResultCode::NXDOMAIN,
-            4 => ResultCode::NOTIMP,
-            5 => ResultCode::REFUSED,
-            0 | _ => ResultCode::NOERROR,
+            1 => MyDnsResultCode::FORMERR,
+            2 => MyDnsResultCode::SERVFAIL,
+            3 => MyDnsResultCode::NXDOMAIN,
+            4 => MyDnsResultCode::NOTIMP,
+            5 => MyDnsResultCode::REFUSED,
+            0 | _ => MyDnsResultCode::NOERROR,
+        }
+    }
+}
+
+#[derive(PartialEq, Eq, Debug, Clone, Hash, Copy)]
+pub enum MyDnsQueryType {
+    UNKNOWN(u16),
+    A,     // 1 Alias - Mapping names to IP addresses
+    NS,    // 2 Name Server - The DNS server address for a domain
+    CNAME, // 5 Canonical Name - Maps names to names
+    MX,    // 15 Mail eXchange - The host of the mail server for a domain
+    AAAA,  // 28 IPv6 alias
+}
+
+impl MyDnsQueryType {
+    pub fn to_num(&self) -> u16 {
+        match *self {
+            MyDnsQueryType::UNKNOWN(x) => x,
+            MyDnsQueryType::A => 1,
+            MyDnsQueryType::NS => 2,
+            MyDnsQueryType::CNAME => 5,
+            MyDnsQueryType::MX => 15,
+            MyDnsQueryType::AAAA => 28,
+        }
+    }
+
+    pub fn from_num(num: u16) -> MyDnsQueryType {
+        match num {
+            1 => MyDnsQueryType::A,
+            2 => MyDnsQueryType::NS,
+            5 => MyDnsQueryType::CNAME,
+            15 => MyDnsQueryType::MX,
+            28 => MyDnsQueryType::AAAA,
+            _ => MyDnsQueryType::UNKNOWN(num),
         }
     }
 }

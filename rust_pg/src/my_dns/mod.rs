@@ -5,6 +5,7 @@ pub mod packet;
 pub mod question;
 pub mod record;
 pub mod types;
+pub mod server;
 
 pub use byte_packet_buffer::BytePacketBuffer;
 pub use mock::dns_mock_response_packet;
