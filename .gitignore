@@ -1,8 +1,8 @@
 build/
-.vscode/
+./.vscode
 *.o
 *.out
-
+settings.json
 *.dump
 target/
 node_modules
