@@ -11,7 +11,7 @@ my_macro_rules = { path = "./my_macro_rules" }
 my_macro_derive = { path = "./my_macro_derive" }
 axum = "0.7.5"
 tokio = { version = "1.39.2", features = ["full"] }
-serde = { version = "1.0", features = ["derive"] }
+serde = { version = "1.0.206", features = ["derive"] }
 serde_json = "1.0.68"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
@@ -20,6 +20,10 @@ mini-redis = "0.4"
 bytes = "1"
 ring = "0.17.8"
 base64 = "0.22.1"
+oxc={version = "0.29",features = ["full"]}
+tokio-util = {version = "0.7.12",features=["full"]}
+futures-util = {version = "0.3.31",features=["sink"]}
+anyhow = "1.0.89"
 # [target.'cfg(target_os = "windows")'.dependencies]
 # opencv = "0.92.2"
 # [build]
