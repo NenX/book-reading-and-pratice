@@ -5,6 +5,7 @@ pub mod my_dns;
 pub mod my_ws;
 pub mod tokio_util_pg;
 pub mod tower_inventing_the_service_trait;
+pub mod wait_something;
 
 pub fn test_lib_fn() -> HashMap<i32, &'static str> {
     let mut m = HashMap::new();
