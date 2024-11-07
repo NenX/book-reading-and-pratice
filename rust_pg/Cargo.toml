@@ -26,6 +26,8 @@ futures-util = {version = "0.3.31",features=["sink"]}
 anyhow = "1.0.89"
 futures="0.3.31"
 crossbeam="0.8.4"
+tokio-stream="0.1.16"
+async-stream="0.3.6"
 # [target.'cfg(target_os = "windows")'.dependencies]
 # opencv = "0.92.2"
 # [build]
