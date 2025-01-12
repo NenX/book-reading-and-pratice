@@ -1,10 +1,8 @@
-#![crate_type = "proc-macro"]
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::quote;
 use syn;
-use syn::DeriveInput;
 
 
 #[proc_macro_derive(AnswerFn)]
@@ -26,7 +24,7 @@ pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
 fn impl_hello_macro(ast: &syn::DeriveInput) -> TokenStream {
     let name = &ast.ident;
     let gen = quote! {
-        impl HelloMacro for #name {
+        impl HelloMacroTrait for #name {
             fn hello_macro() {
                 println!("Hello, Macro! My name is {}!", stringify!(#name));
             }
