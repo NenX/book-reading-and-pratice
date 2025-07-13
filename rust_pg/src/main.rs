@@ -9,3 +9,4 @@ fn main() {
     trigger(&c, |MyName(x): MyName, i: i32| println!("?? {x}  {i}"));
     trigger(&c, |MyUrl(x): MyUrl| println!("?? {x} "));
 }
+

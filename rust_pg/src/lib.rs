@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 pub mod magic_params;
 pub mod my_dns;
+pub mod my_vec;
 pub mod my_ws;
 pub mod tokio_util_pg;
 pub mod tower_inventing_the_service_trait;
